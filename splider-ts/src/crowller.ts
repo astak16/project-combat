@@ -35,3 +35,4 @@ const secret = "secretKey";
 const url = `http://www.dell-lee.com/typescript/demo.html?secret=${secret}`;
 const analyzer = DellAnalyer.getInstance();
 new Crowller(url, analyzer);
+
