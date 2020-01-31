@@ -8,6 +8,10 @@ var router_1 = __importDefault(require("./router"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var app = express_1.default();
 app.use(body_parser_1.default.urlencoded({ extended: false }));
+app.use(function (req, res, next) {
+    req.teacherName = "dell";
+    next();
+});
 app.use(router_1.default);
 app.listen(7001, function () {
     console.log("sever is running");

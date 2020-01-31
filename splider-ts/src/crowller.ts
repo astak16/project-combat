@@ -2,7 +2,7 @@ import superagent from "superagent";
 import cheerio from "cheerio";
 import fs from "fs";
 import path from "path";
-import { DellAnalyer } from "./dellAnalyzer";
+
 
 export interface Analyzer {
   analyze: (html: string, filePath: string) => string;

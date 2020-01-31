@@ -11,7 +11,8 @@ router.get("/", function (req, res) {
     res.send("\n  <html>\n    <body>\n    <form method=\"post\" action=\"/getData\">\n      <input type=\"password\" name=\"password\"></input>\n      <button>\u63D0\u4EA4</button>\n    </form>\n    </body>\n  </html>\n  ");
 });
 router.post("/getData", function (req, res) {
-    if (req.body.password === "123") {
+    var password = req.body.password;
+    if (password === "123") {
         var secret = "secretKey";
         var url = "http://www.dell-lee.com/typescript/demo.html?secret=" + secret;
         var analyzer = dellAnalyzer_1.DellAnalyer.getInstance();
@@ -19,7 +20,7 @@ router.post("/getData", function (req, res) {
         res.send("success getData !");
     }
     else {
-        res.send("password Error");
+        res.send(req.teacherName + " password Error");
     }
 });
 exports.default = router;
