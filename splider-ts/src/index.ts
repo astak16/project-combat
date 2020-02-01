@@ -16,6 +16,6 @@ app.use(
 
 app.use(router);
 
-app.listen(7001, () => {
+app.listen(7002, () => {
   console.log("sever is running");
 });

@@ -15,6 +15,6 @@ app.use(cookie_session_1.default({
     maxAge: 24 * 60 * 60 * 1000
 }));
 app.use(router_1.default);
-app.listen(7001, function () {
+app.listen(7002, function () {
     console.log("sever is running");
 });

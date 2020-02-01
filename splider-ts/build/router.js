@@ -4,10 +4,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
-var dellAnalyzer_1 = require("./dellAnalyzer");
-var crowller_1 = __importDefault(require("./crowller"));
+var dellAnalyzer_1 = require("./utils/dellAnalyzer");
+var crowller_1 = __importDefault(require("./utils/crowller"));
 var path_1 = __importDefault(require("path"));
 var fs_1 = __importDefault(require("fs"));
+var util_1 = require("./utils/util");
+var checkLogin = function (req, res, next) {
+    var isLogin = req.session ? req.session.login : false;
+    if (isLogin) {
+        next();
+    }
+    else {
+        res.json(util_1.getResponseData(null, "请先登录"));
+    }
+};
 var router = express_1.Router();
 router.get("/", function (req, res) {
     var isLogin = req.session ? req.session.login : false;
@@ -21,49 +31,38 @@ router.get("/logout", function (req, res) {
     if (req.session) {
         req.session.login = undefined;
     }
-    res.redirect("/");
+    res.json(util_1.getResponseData(true));
 });
-router.get("/getData", function (req, res) {
-    var isLogin = req.session ? req.session.login : false;
-    if (isLogin) {
-        var secret = "secretKey";
-        var url = "http://www.dell-lee.com/typescript/demo.html?secret=" + secret;
-        var analyzer = dellAnalyzer_1.DellAnalyer.getInstance();
-        new crowller_1.default(url, analyzer);
-        res.send("success getData !");
-    }
-    else {
-        res.send("\u8BF7\u767B\u5F55");
-    }
+router.get("/getData", checkLogin, function (req, res) {
+    var secret = "secretKey";
+    var url = "http://www.dell-lee.com/typescript/demo.html?secret=" + secret;
+    var analyzer = dellAnalyzer_1.DellAnalyer.getInstance();
+    new crowller_1.default(url, analyzer);
+    res.json(util_1.getResponseData(true));
 });
-router.get("/showData", function (req, res) {
-    var isLogin = req.session ? req.session.login : false;
-    if (!isLogin) {
-        res.send("请登录后查看");
-        return;
-    }
+router.get("/showData", checkLogin, function (req, res) {
     try {
         var position = path_1.default.resolve(__dirname, "../data/course.json");
         var result = fs_1.default.readFileSync(position, "utf-8");
-        res.json(JSON.parse(result));
+        res.json(util_1.getResponseData(JSON.parse(result)));
     }
     catch (e) {
-        res.send("尚未爬取内容");
+        res.json(util_1.getResponseData(false, "数据不存在"));
     }
 });
 router.post("/login", function (req, res) {
     var password = req.body.password;
     var isLogin = req.session ? req.session.login : undefined;
     if (isLogin) {
-        res.send("已经登录");
+        res.json(util_1.getResponseData(false, "已经登录过"));
         return;
     }
     if (password === "123" && req.session) {
         req.session.login = true;
-        res.send("登录成功");
+        res.json(util_1.getResponseData(true));
     }
     else {
-        res.send("登录失败");
+        res.json(util_1.getResponseData(false, "登录失败"));
     }
 });
 exports.default = router;
